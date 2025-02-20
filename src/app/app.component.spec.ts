@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { DebugElement } from '@angular/core';
 
 describe('AppComponent', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
-  let nativeElement: DebugElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
