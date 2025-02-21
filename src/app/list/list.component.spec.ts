@@ -1,4 +1,4 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ListComponent } from './list.component';
 import { DebugElement } from '@angular/core';
@@ -13,9 +13,9 @@ describe('ListComponent', () => {
   let debugElement: DebugElement;
   let recipesService: any;
   
-  beforeEach(async () => {
+  beforeEach(waitForAsync(() => {
     const recipesServiceSpy = jasmine.createSpyObj('RecipesService', ['getAllRecipes']);
-    await TestBed.configureTestingModule({
+    TestBed.configureTestingModule({
       imports: [ListComponent, NoopAnimationsModule],
       providers: [{ provide: RecipesService, useValue: recipesServiceSpy }]
     })
@@ -26,7 +26,7 @@ describe('ListComponent', () => {
     debugElement = fixture.debugElement;
     recipesService = TestBed.inject(RecipesService);
     fixture.detectChanges();
-  });
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -55,12 +55,24 @@ describe('ListComponent', () => {
     expect(tabs.length).toBe(2);
   });
 
-  it('should display the tab 2', () => {
+  it('should display the tab 2 - using done function', (done: DoneFn) => {
+    recipesService.getAllRecipes.and.returnValue(RECIPES);
+    component.cardIterations = [1,2,3,4];
+    fixture.detectChanges();
+    setTimeout(() => {
+      const tabs = debugElement.queryAll(By.css('.mdc-tab')); 
+      tabs[1].nativeElement.click();
+      expect(tabs[1].nativeElement.textContent).toBe('Second');
+      done();
+    });
+  });
+
+  it('should display the tab 2 - using done function', fakeAsync(() => {
     recipesService.getAllRecipes.and.returnValue(RECIPES);
     component.cardIterations = [1,2,3,4];
     fixture.detectChanges();
     const tabs = debugElement.queryAll(By.css('.mdc-tab')); 
     tabs[1].nativeElement.click();
     expect(tabs[1].nativeElement.textContent).toBe('Second');
-  });
+  }));
 });
